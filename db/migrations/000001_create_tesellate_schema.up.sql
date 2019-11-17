@@ -1,0 +1,63 @@
+CREATE TABLE IF NOT EXISTS layouts(
+    id SERIAL PRIMARY KEY,
+    name VARCHAR UNIQUE NOT NULL,
+    raw BYTEA,
+    created_by VARCHAR(25) NOT NULL ,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS tags(
+    id SERIAL PRIMARY KEY,
+    key VARCHAR(25) UNIQUE NOT NULL,
+    value VARCHAR(25) NOT NULL,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS variables(
+    id SERIAL PRIMARY KEY,
+    raw BYTEA
+);
+
+CREATE TABLE IF NOT EXISTS states(
+    id SERIAL PRIMARY KEY,
+    raw BYTEA,
+    infrastructure_id VARCHAR(50) NOT NULL,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TYPE status AS ENUM ('failed', 'succeeded', 'processing');
+
+CREATE TABLE IF NOT EXISTS infrastructures(
+    id SERIAL PRIMARY KEY,
+    layout_id VARCHAR(25) NOT NULL,
+    variables JSON NOT NULL,
+    status status,
+    started_at TIMESTAMP,
+    completed_at TIMESTAMP,
+    result VARCHAR(100),
+    operation VARCHAR(25)
+);
+
+CREATE TABLE IF NOT EXISTS logs(
+    id SERIAL PRIMARY KEY,
+    infrastructure_id INTEGER,
+    raw BYTEA,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS users(
+    id SERIAL PRIMARY KEY,
+    email VARCHAR(45) NOT NULL,
+    otp VARCHAR(6),
+    admin BOOL,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS tokens(
+    id SERIAL PRIMARY KEY,
+    key VARCHAR(25) NOT NULL,
+    created_by VARCHAR(45) NOT NULL,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+
